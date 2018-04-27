@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{0D94C6F1-1CC5-4079-A762-2DAC5BB3F6CB}</ProjectGuid>
+    <ProjectGuid>{CA35BA28-3CC7-4776-B283-6E3CE375264C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>BullsNCows</RootNamespace>
+    <RootNamespace>StacksandQueues</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -151,7 +151,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BullsNCows.cpp" />
+    <ClCompile Include="Stacks and Queues.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
