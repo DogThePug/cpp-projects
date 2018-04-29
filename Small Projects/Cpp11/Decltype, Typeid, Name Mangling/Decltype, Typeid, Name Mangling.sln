@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Decltype, Typeid, Name Mangling", "Decltype, Typeid, Name Mangling\Decltype, Typeid, Name Mangling.vcxproj", "{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Debug|x64.ActiveCfg = Debug|x64
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Debug|x64.Build.0 = Debug|x64
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Debug|x86.ActiveCfg = Debug|Win32
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Debug|x86.Build.0 = Debug|Win32
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Release|x64.ActiveCfg = Release|x64
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Release|x64.Build.0 = Release|x64
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Release|x86.ActiveCfg = Release|Win32
+		{03BCB9D8-4FF6-474D-9098-3FF8CC58EC14}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {90D082CE-8B4C-408D-8202-C92E0288F146}
+	EndGlobalSection
+EndGlobal
