@@ -16,7 +16,7 @@ void FBullCowGame::Reset()
 
 int FBullCowGame::GetMaxTries() const
 {
-	TMap<int32, int32> WordLengthToMaxTries{ {3,4},{4,7},{5,9},{6,16} };
+	TMap<int, int> WordLengthToMaxTries{ {3,4},{4,7},{5,9},{6,16} };
 	return WordLengthToMaxTries[GetHiddenWordLength()];
 }
 
@@ -25,7 +25,7 @@ int FBullCowGame::GetCurrentTry() const
 	return MyCurrentTry;
 }
 
-int32 FBullCowGame::GetHiddenWordLength() const
+int FBullCowGame::GetHiddenWordLength() const
 {
 	return MyHiddenWord.length();
 }
@@ -36,7 +36,7 @@ bool FBullCowGame::IsGameWon() const
 	return bIsGameWon;
 }
 
-EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
+EGuessStatus FBullCowGame::CheckGuessValidity(std::string Guess) const
 {
 	if (!IsIsogram(Guess))
 	{
@@ -57,15 +57,15 @@ EGuessStatus FBullCowGame::CheckGuessValidity(FString Guess) const
 	
 }
 
-FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess)
+FBullCowCount FBullCowGame::SubmitValidGuess(std::string Guess)
 {
 
 	MyCurrentTry++;
 	FBullCowCount FBullCowCount;
-	int32 WordLength = MyHiddenWord.length();
-	for (int32 i = 0; i < WordLength;i++) 
+	int WordLength = MyHiddenWord.length();
+	for (int i = 0; i < WordLength;i++) 
 	{
-		for (int32 j = 0; j < WordLength; j++) 
+		for (int j = 0; j < WordLength; j++) 
 		{
 			if (Guess[j] == MyHiddenWord[i]) {
 				if (j == i) FBullCowCount.Bulls++;
@@ -77,7 +77,7 @@ FBullCowCount FBullCowGame::SubmitValidGuess(FString Guess)
 	return FBullCowCount;
 }
 
-void FBullCowGame::SetWordLength(int32 WordLength)
+void FBullCowGame::SetWordLength(int WordLength)
 {
 	MyWordLength = WordLength;
 	return;
@@ -85,7 +85,7 @@ void FBullCowGame::SetWordLength(int32 WordLength)
 
 void FBullCowGame::SetSecretWord()
 {
-	srand(time(NULL));
+	srand((unsigned int)(time(NULL)));
 	int RandomNumber = (rand() % 10);
 	switch (MyWordLength) {
 	case 3: MyHiddenWord = ThreeLetterWords[RandomNumber];
@@ -100,7 +100,7 @@ void FBullCowGame::SetSecretWord()
 	return;
 }
 
-bool FBullCowGame::IsLowerCase(FString Word) const
+bool FBullCowGame::IsLowerCase(std::string Word) const
 {
 	for (auto Letter : Word) {
 		if (islower(Letter)) return true;
@@ -109,7 +109,7 @@ bool FBullCowGame::IsLowerCase(FString Word) const
 	return true;
 }
 
-bool FBullCowGame::IsIsogram(FString Word) const
+bool FBullCowGame::IsIsogram(std::string Word) const
 {
 	if (Word.length() <= 1) return true;
 

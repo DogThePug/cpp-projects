@@ -4,14 +4,13 @@
 #include "iostream"
 #include "FBullCowGame.h"
 #pragma once
-using int32 = int;
-using FText = std::string;
+
 void PrintIntro();
 void PlayGame();
 void PrintGameSummary();
 bool AskToPlayAgain();
 void AskNumberOfLetters();
-FText GetValidGuess();
+std::string GetValidGuess();
 void TypeBackBullsAndCows(FBullCowCount FBullCowCount);
 
 FBullCowGame BCGame;
@@ -34,9 +33,9 @@ void PlayGame()
 {
 	AskNumberOfLetters();
 	BCGame.Reset();
-	int32 HiddenWordLength = BCGame.GetHiddenWordLength();
-	int32 MaxTries = BCGame.GetMaxTries();
-	FText Guess = "";
+	int HiddenWordLength = BCGame.GetHiddenWordLength();
+	int MaxTries = BCGame.GetMaxTries();
+	std::string Guess = "";
 	std::cout << "You have " << MaxTries << " tries.\n";
 	while(!BCGame.IsGameWon() && BCGame.GetCurrentTry() <= MaxTries)
 	{
@@ -62,12 +61,12 @@ void PrintIntro() {
 	
 	return;
 }
-FText GetValidGuess() 
+std::string GetValidGuess() 
 {
 	EGuessStatus Status = EGuessStatus::Invalid_Status;
-	FText Guess = "";
+	std::string Guess = "";
 	do {
-		int32 CurrentTry = BCGame.GetCurrentTry();
+		int CurrentTry = BCGame.GetCurrentTry();
 		std::cout << "\nTry " << CurrentTry << ". ";
 		std::cout << "Make a guess:";
 		getline(std::cin, Guess);
@@ -98,7 +97,7 @@ void TypeBackBullsAndCows(FBullCowCount FBullCowCount)
 }
 bool AskToPlayAgain() 
 {
-	FText Response = "";
+	std::string Response = "";
 	std::cout << "\nDo you want to play again with another word?(y/n):";
 	getline(std::cin, Response);
 	system("cls");
@@ -110,8 +109,8 @@ bool AskToPlayAgain()
 }
 void AskNumberOfLetters()
 {
-	FString NumberOfLettersString = "";
-	int32 NumberOfLetters = 0;
+	std::string NumberOfLettersString = "";
+	int NumberOfLetters = 0;
 	std::cout << "How many letters would you like to have in the word?";
 	while (NumberOfLetters > 6 || NumberOfLetters < 3 || NumberOfLetters == NULL)
 	{
