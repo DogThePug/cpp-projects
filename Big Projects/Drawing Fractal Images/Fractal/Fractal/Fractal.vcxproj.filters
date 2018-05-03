@@ -39,6 +39,9 @@
     <ClInclude Include="Zoom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FractalCreator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -54,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ZoomList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FractalCreator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

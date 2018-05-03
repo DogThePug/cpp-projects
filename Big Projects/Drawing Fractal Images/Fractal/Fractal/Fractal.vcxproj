@@ -150,6 +150,7 @@
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapFileHeader.h" />
     <ClInclude Include="BitmapInfoHeader.h" />
+    <ClInclude Include="FractalCreator.h" />
     <ClInclude Include="Zoom.h" />
     <ClInclude Include="Mandelbrot.h" />
     <ClInclude Include="stdafx.h" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="FractalCreator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mandelbrot.cpp" />
     <ClCompile Include="stdafx.cpp">
