@@ -3,7 +3,7 @@ class Mandelbrot
 {
 
 public:
-	static const int MAX_ITERATIONS = 500;
+	static const int MAX_ITERATIONS = 2000;
 
 	Mandelbrot();
 	~Mandelbrot();
