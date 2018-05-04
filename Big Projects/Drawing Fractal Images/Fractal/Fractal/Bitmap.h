@@ -10,6 +10,7 @@ class Bitmap
 	int _height{ 0 };
 	std::unique_ptr<uint8_t[]> _pPixels{ nullptr };
 public:
+
 	Bitmap(int width, int height);
 	virtual ~Bitmap();
 	

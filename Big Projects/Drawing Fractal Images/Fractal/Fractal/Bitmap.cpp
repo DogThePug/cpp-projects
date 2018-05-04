@@ -4,6 +4,8 @@
 #include "BitmapFileHeader.h"
 #include <fstream>
 
+
+
 Bitmap::Bitmap(int width, int height) :_width(width), _height(height), _pPixels(new uint8_t[width*height * 3]{})
 {
 }
