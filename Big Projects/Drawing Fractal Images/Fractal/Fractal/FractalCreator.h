@@ -7,12 +7,14 @@
 #include "Bitmap.h"
 #include "RGB.h"
 #include <functional>
+#include <mutex>
 
 class FractalCreator
 {
 private:
-	int const WIDTH;
-	int const HEIGHT;
+	std::mutex _mu;
+	int WIDTH;
+	int HEIGHT;
 	std::unique_ptr<int[]> _histogram;
 	std::unique_ptr<int[]> _fractal;
 	Bitmap _bitmap;
@@ -29,7 +31,6 @@ private:
 	void DrawFractal();
 	void WriteBitmap(std::string name);
 	void calculateRangeTotals();
-
 	int getRange(int iterations) const;
 public:
 	void addColorRange(double rangeEnd, const RGB& rgb);
