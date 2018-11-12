@@ -151,6 +151,8 @@
     <ClInclude Include="BitmapFileHeader.h" />
     <ClInclude Include="BitmapInfoHeader.h" />
     <ClInclude Include="FractalCreator.h" />
+    <ClInclude Include="InfoGatherer.h" />
+    <ClInclude Include="PrioritySetter.h" />
     <ClInclude Include="RGB.h" />
     <ClInclude Include="Zoom.h" />
     <ClInclude Include="Mandelbrot.h" />
@@ -161,8 +163,10 @@
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="FractalCreator.cpp" />
+    <ClCompile Include="InfoGatherer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mandelbrot.cpp" />
+    <ClCompile Include="PrioritySetter.cpp" />
     <ClCompile Include="RGB.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -171,6 +175,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ZoomList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Management" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

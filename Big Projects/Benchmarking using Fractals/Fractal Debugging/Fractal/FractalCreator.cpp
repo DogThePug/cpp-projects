@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include "FractalCreator.h"
 #include "Mandelbrot.h"
+#include "InfoGatherer.h"
 
 #include <assert.h> 
 #include <iostream>
 #include <thread>
+#include <vector>
+#include <algorithm>
 
 FractalCreator::FractalCreator(const int  WIDTH, const int HEIGHT):WIDTH(WIDTH),HEIGHT(HEIGHT),_bitmap(WIDTH,HEIGHT), _zoomList(WIDTH, HEIGHT), _fractal(new int[WIDTH*HEIGHT]), _histogram(new int[Mandelbrot::MAX_ITERATIONS]{ 0 }),totalIterations(0)
 {
@@ -18,9 +21,10 @@ FractalCreator::FractalCreator(const int  WIDTH, const int HEIGHT):WIDTH(WIDTH),
  
 void FractalCreator::CalculateIterations()
 {
-	auto IterThread = [this](int thread)
+	const int AmountOfThreadsUsed = 8;
+	auto IterThread = [this, AmountOfThreadsUsed](int thread)
 	{
-		for (int iHeight = (HEIGHT/4)*(thread - 1);iHeight < (HEIGHT/4)*(thread);iHeight++) {
+		for (int iHeight = (HEIGHT/ AmountOfThreadsUsed)*(thread - 1);iHeight < (HEIGHT/ AmountOfThreadsUsed)*(thread);iHeight++) {
 			for (int iWidth = 0; iWidth < WIDTH;iWidth++)
 			{
 				std::pair<double, double> coords = _zoomList.ZoomIn(iWidth, iHeight);
@@ -35,17 +39,14 @@ void FractalCreator::CalculateIterations()
 		}
 	};
 	
-	//using 4 threads to count iterations
+	
+	std::vector<std::thread> v;
+	for (int i = 0; i < AmountOfThreadsUsed; i++)
+	{
+		v.push_back(std::thread(IterThread, i + 1));
+	}
 
-	std::thread th1(IterThread, 1);
-	std::thread th2(IterThread, 2);
-	std::thread th3(IterThread, 3);
-	std::thread th4(IterThread, 4);
-
-	th1.join();
-	th2.join();
-	th3.join();
-	th4.join();
+	join_all(v);
 
 
 	totalIterations = 0;
@@ -172,15 +173,33 @@ int FractalCreator::getRange(int iterations) const
 	return range;
 }
 
+
 void FractalCreator::run(std::string name)
 {
-	
 
+	InfoGatherer Gatherer = InfoGatherer();
+
+	Gatherer.GetInitialInformation();
+
+	std::thread([&]() {
+		while (true)
+		{
+			// Wait 5 miliseconds
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			// Call our method
+			Gatherer.TickInformationCheck();
+		}
+	}).detach();
+
+	
 	//Calculating Iterations of Mandelbrot algorythm
 	clock_t begin = clock();
 
+	
+
 	std::cout << "Executing Mandelbrot algorythm." << std::endl;
 	CalculateIterations();
+	Gatherer.TickInformationCheck();
 	std::cout << "Done." << std::endl;
 	calculateRangeTotals();
 
@@ -206,3 +225,16 @@ void FractalCreator::run(std::string name)
 	std::cout << "Finished." << std::endl;
 }
 
+
+void FractalCreator::do_join(std::thread & t)
+{
+	t.join();
+}
+
+void FractalCreator::join_all(std::vector<std::thread> & v)
+{
+	for (int i = 0; i < v.size(); i++)
+	{
+		do_join(v.at(i));
+	}
+}

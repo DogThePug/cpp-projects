@@ -12,11 +12,14 @@
 class FractalCreator
 {
 private:
-	std::mutex _mu;
+
+
 	int WIDTH;
 	int HEIGHT;
+
 	std::unique_ptr<int[]> _histogram;
 	std::unique_ptr<int[]> _fractal;
+
 	Bitmap _bitmap;
 	ZoomList _zoomList;
 	int totalIterations;
@@ -32,6 +35,10 @@ private:
 	void WriteBitmap(std::string name);
 	void calculateRangeTotals();
 	int getRange(int iterations) const;
+
+	void do_join(std::thread& t);
+	
+	void join_all(std::vector<std::thread>& v);
 public:
 	void addColorRange(double rangeEnd, const RGB& rgb);
 	void addZoom(const Zoom& zoom);
