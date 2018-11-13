@@ -12,7 +12,18 @@ PrioritySetter::~PrioritySetter()
 {
 }
 
-void PrioritySetter::SetPriority()
+void PrioritySetter::SetPriority(int Case)
 {
-	SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+	switch (Case)
+	{
+	case 1:
+		SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS);
+		break;
+	case 2:
+		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+		break;
+	default:
+		SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+		break;
+	}
 }

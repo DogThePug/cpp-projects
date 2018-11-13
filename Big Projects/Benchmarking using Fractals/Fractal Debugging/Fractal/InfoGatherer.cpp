@@ -4,12 +4,16 @@
 #include "pdh.h"
 #include "psapi.h"
 
-#include <Windows.h>
+
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <intrin.h> 
-
+#include <vector>
+#include <set>
+#include <string>
+#include <iomanip>
+#include <fstream>
 
 static ULARGE_INTEGER lastCPU, lastSysCPU, lastUserCPU;
 static int numProcessors;
@@ -31,9 +35,162 @@ void InfoGatherer::GetInitialInformation()
 	FindHardwareInfo();
 }
 
+void InfoGatherer::InitializeNewTest(int PriorityCase, int ThreadsUsed)
+{
+	// Starting new fresh test results
+	AmountOfThreadsUsed.push_back(ThreadsUsed);
+
+	switch (PriorityCase)
+	{
+	case 1:
+		PrioritiesUsed.push_back("ABOVE_NORMAL_PRIORITY_CLASS");
+		break;
+	case 2:
+		PrioritiesUsed.push_back("HIGH_PRIORITY_CLASS");
+		break;
+	default:
+		PrioritiesUsed.push_back("NORMAL_PRIORITY_CLASS");
+		break;
+	}
+
+	std::vector<Info> NewInfoVector;
+	InformationSet.push_back(NewInfoVector);
+}
+
+void InfoGatherer::WriteTestsToFile()
+{
+	std::ofstream outData;
+	outData.open("testResults.csv");
+	outData << "sep=," <<std::endl;
+	outData << "Testing Results." << std::endl << std::endl;
+	outData << "CPU Hardware:" << ',' << CPUHardware << std::endl;
+	outData << "Number of Cores:" << ',' << NumberOfCores << std::endl;
+	outData << "Total RAM:" << ',' << TotalRAM << std::endl;
+
+
+	int TestNumber = 1;
+
+	int CurrentAmountOfThreadsUsed = 0;
+	std::string CurrentPrioritySet = "";
+	int run = 0;
+
+	while (run <= AmountOfThreadsUsed.size()-1) 
+	{
+		while (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(run) && CurrentPrioritySet == PrioritiesUsed.at(run))
+		{
+			run++;
+			if (run >= AmountOfThreadsUsed.size()) break;
+		}
+
+		if (run >= AmountOfThreadsUsed.size()) break;
+
+		outData << "\r\n\r\n,,Test Number" << ',' << TestNumber << std::endl << std::endl;
+
+		CurrentAmountOfThreadsUsed = AmountOfThreadsUsed.at(run);
+		outData << ",,,Amount of threads used:" << ',' << CurrentAmountOfThreadsUsed << std::endl;
+
+		CurrentPrioritySet = PrioritiesUsed.at(run);
+		outData << ",,,CPU load priority used:" << ',' << CurrentPrioritySet << std::endl << std::endl;
+	
+		int RunNumber = 0;
+		int TempRunNumber = 1;
+		outData << ",CPU loads during the test:" << ',' << std::endl;
+		for (auto InfoVec : InformationSet)
+		{
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			{
+				outData <<"Run "<< TempRunNumber <<',';
+				for (auto Info : InfoVec)
+				{
+					outData << Info.CPUUsage << ',';
+				}
+				outData << std::endl;
+				TempRunNumber++;
+			}
+			RunNumber++;
+		}
+
+		outData << std::endl << std::endl;
+
+		RunNumber = 0;
+		TempRunNumber = 1;
+		outData << ",Virtual memory loads during the test:" << ',' << std::endl;
+		for (auto InfoVec : InformationSet)
+		{
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			{
+				outData << "Run " << TempRunNumber << ',';
+				for (auto Info : InfoVec)
+				{
+					outData << Info.VirtualMemUsage << ',';
+				}
+				outData << std::endl;
+				TempRunNumber++;
+			}
+			RunNumber++;
+		}
+
+		outData << std::endl << std::endl;
+
+		RunNumber = 0;
+		TempRunNumber = 1;
+		outData << ",Physical memory(RAM) loads during the test:" << ',' << std::endl;
+		for (auto InfoVec : InformationSet)
+		{
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			{
+				outData << "Run " << TempRunNumber << ',';
+				for (auto Info : InfoVec)
+				{
+					outData << Info.RAMUsage << ',';
+				}
+				outData << std::endl;
+				TempRunNumber++;
+			}
+			RunNumber++;
+		}
+
+		outData << std::endl << std::endl;
+
+		RunNumber = 0;
+		TempRunNumber = 1;
+		outData << ",Times taken for each run:" << ',' << std::endl;
+		outData << ",,";
+		for (auto TimeTaken : TimeTakenVector)
+		{
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			{
+				outData << "run " << TempRunNumber << ",";
+				TempRunNumber++;
+			}
+			RunNumber++;
+		}
+
+		RunNumber = 0;
+		TempRunNumber = 1;
+		outData << std::endl;
+		outData << ",,";
+		for (auto TimeTaken : TimeTakenVector)
+		{
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			{
+				outData << TimeTaken << " sec,";
+				TempRunNumber++;
+			}
+			RunNumber++;
+		}
+
+
+		TestNumber++;
+	}
+	outData.close();
+}
+	
+
+
 void InfoGatherer::TickInformationCheck()
 {
-	//std::cout << CPUCurrentlyUsed() << std::endl;
+	double CPUUsed = CPUCurrentlyUsed();
 
 	PROCESS_MEMORY_COUNTERS_EX pmc;
 	GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
@@ -41,9 +198,24 @@ void InfoGatherer::TickInformationCheck()
 	SIZE_T virtMemUsedByMe = pmc.PrivateUsage;
 	SIZE_T physMemUsedByMe = pmc.WorkingSetSize;
 
-	//std::cout << physMemUsedByMe << std::endl;
-	std::cout << virtMemUsedByMe << std::endl;
-	
+	Info InfoToInsert;
+	InfoToInsert.CPUUsage = (unsigned int)CPUUsed;
+	InfoToInsert.RAMUsage = physMemUsedByMe;
+	InfoToInsert.VirtualMemUsage = virtMemUsedByMe;
+
+	InformationSet.at(InformationSet.size()-1).push_back(InfoToInsert);
+}
+
+
+
+const int InfoGatherer::GetNumberOfCores()
+{
+	return NumberOfCores;
+}
+
+void InfoGatherer::AddNewTestTimeTaken(double TimeTakenOnTest)
+{
+	TimeTakenVector.push_back(TimeTakenOnTest);
 }
 
 void InfoGatherer::FindHardwareInfo()
@@ -108,7 +280,7 @@ double InfoGatherer::CPUCurrentlyUsed()
 	GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser);
 	memcpy(&sys, &fsys, sizeof(FILETIME));
 	memcpy(&user, &fuser, sizeof(FILETIME));
-	percent = (sys.QuadPart - lastSysCPU.QuadPart) +
+	percent = ((double)sys.QuadPart - lastSysCPU.QuadPart) +
 		(user.QuadPart - lastUserCPU.QuadPart);
 	percent /= (now.QuadPart - lastCPU.QuadPart);
 	percent /= numProcessors;

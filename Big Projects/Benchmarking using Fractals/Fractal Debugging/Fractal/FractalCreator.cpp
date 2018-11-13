@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "FractalCreator.h"
 #include "Mandelbrot.h"
-#include "InfoGatherer.h"
 
 #include <assert.h> 
 #include <iostream>
@@ -19,9 +18,8 @@ FractalCreator::FractalCreator(const int  WIDTH, const int HEIGHT):WIDTH(WIDTH),
 }
 
  
-void FractalCreator::CalculateIterations()
+void FractalCreator::CalculateIterations(int AmountOfThreadsUsed)
 {
-	const int AmountOfThreadsUsed = 8;
 	auto IterThread = [this, AmountOfThreadsUsed](int thread)
 	{
 		for (int iHeight = (HEIGHT/ AmountOfThreadsUsed)*(thread - 1);iHeight < (HEIGHT/ AmountOfThreadsUsed)*(thread);iHeight++) {
@@ -174,54 +172,10 @@ int FractalCreator::getRange(int iterations) const
 }
 
 
-void FractalCreator::run(std::string name)
+void FractalCreator::run(std::string name, int AmountOfThreadsUsed)
 {
-
-	InfoGatherer Gatherer = InfoGatherer();
-
-	Gatherer.GetInitialInformation();
-
-	std::thread([&]() {
-		while (true)
-		{
-			// Wait 5 miliseconds
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			// Call our method
-			Gatherer.TickInformationCheck();
-		}
-	}).detach();
-
-	
-	//Calculating Iterations of Mandelbrot algorythm
-	clock_t begin = clock();
-
-	
-
 	std::cout << "Executing Mandelbrot algorythm." << std::endl;
-	CalculateIterations();
-	Gatherer.TickInformationCheck();
-	std::cout << "Done." << std::endl;
-	calculateRangeTotals();
-
-	clock_t end = clock();
-	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	std::cout << "Executing Mandelbrot algorythm took " << elapsed_secs << " seconds." << std::endl;
-	
-	//Drawing 
-	begin = clock();
-
-	std::cout << "Drawing fractal." << std::endl;
-	DrawFractal();
-	std::cout << "Done." << std::endl;
-	
-	end = clock();
-	elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	std::cout << "Drawing took " << elapsed_secs << " seconds." << std::endl;
-
-	//writing to bitmap
-	std::cout << "Writing to bitmap file." << std::endl;
-	WriteBitmap(name);
-
+	CalculateIterations(AmountOfThreadsUsed);
 	std::cout << "Finished." << std::endl;
 }
 

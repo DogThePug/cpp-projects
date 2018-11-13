@@ -1,9 +1,13 @@
-#include <set>
+
 
 #pragma once
 
+#include <string>
+#include <vector>
+
+
 struct Info {
-	double CPUUsage;
+	unsigned int CPUUsage;
 	size_t VirtualMemUsage;
 	size_t RAMUsage;
 };
@@ -16,19 +20,28 @@ public:
 
 	void GetInitialInformation();
 
-	void InitializeNewTest();
+	void InitializeNewTest(int PriorityCase, int ThreadsUsed);
+
+	void WriteTestsToFile();
 
 	void TickInformationCheck();
+
+
+
+	const int GetNumberOfCores();
+
+	void AddNewTestTimeTaken(double TimeTakenOnTest);
 private:
-	std::set<int> AmountOfThreadsUsed;
-	std::set<std::string> PriorityUsed;
-	std::set<std::set<Info>> InformationSet;
+	std::vector<double> TimeTakenVector;
+	std::vector<int> AmountOfThreadsUsed;
+	std::vector<std::string> PrioritiesUsed;
+	std::vector<std::vector<Info>> InformationSet;
 
 	std::string CPUHardware;
 	int NumberOfCores;
-	int TotalRAM;
+	long TotalRAM;
+	
 	void FindHardwareInfo();
-
 	void initializeCPUSettings();
 	double CPUCurrentlyUsed();
 

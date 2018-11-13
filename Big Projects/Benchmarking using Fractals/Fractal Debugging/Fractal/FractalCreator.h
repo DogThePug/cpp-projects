@@ -30,7 +30,7 @@ private:
 
 	bool _bGotFirstRange{ false };
 
-	void CalculateIterations();
+	void CalculateIterations(int AmountOfThreadsUsed);
 	void DrawFractal();
 	void WriteBitmap(std::string name);
 	void calculateRangeTotals();
@@ -44,6 +44,6 @@ public:
 	void addZoom(const Zoom& zoom);
 	FractalCreator(const int  WIDTH, const int HEIGHT);
 	virtual ~FractalCreator();
-	void run(std::string name);
+	void run(std::string name, int AmountOfThreadsUsed);
 };
 
