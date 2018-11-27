@@ -14,6 +14,8 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include<cmath>
+#include<iomanip>
 
 static ULARGE_INTEGER lastCPU, lastSysCPU, lastUserCPU;
 static int numProcessors;
@@ -35,7 +37,7 @@ void InfoGatherer::GetInitialInformation()
 	FindHardwareInfo();
 }
 
-void InfoGatherer::InitializeNewTest(int PriorityCase, int ThreadsUsed)
+void InfoGatherer::InitializeNewTest(int PriorityCase, int ThreadsUsed, std::string ZoomUsed)
 {
 	// Starting new fresh test results
 	AmountOfThreadsUsed.push_back(ThreadsUsed);
@@ -53,6 +55,7 @@ void InfoGatherer::InitializeNewTest(int PriorityCase, int ThreadsUsed)
 		break;
 	}
 
+	ZoomsUsed.push_back(ZoomUsed);
 	std::vector<Info> NewInfoVector;
 	InformationSet.push_back(NewInfoVector);
 }
@@ -72,11 +75,12 @@ void InfoGatherer::WriteTestsToFile()
 
 	int CurrentAmountOfThreadsUsed = 0;
 	std::string CurrentPrioritySet = "";
+	std::string CurrentZoomUsed = "";
 	int run = 0;
 
 	while (run <= AmountOfThreadsUsed.size()-1) 
 	{
-		while (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(run) && CurrentPrioritySet == PrioritiesUsed.at(run))
+		while (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(run) && CurrentPrioritySet == PrioritiesUsed.at(run) && CurrentZoomUsed == ZoomsUsed.at(run))
 		{
 			run++;
 			if (run >= AmountOfThreadsUsed.size()) break;
@@ -92,12 +96,15 @@ void InfoGatherer::WriteTestsToFile()
 		CurrentPrioritySet = PrioritiesUsed.at(run);
 		outData << ",,,CPU load priority used:" << ',' << CurrentPrioritySet << std::endl << std::endl;
 	
+		CurrentZoomUsed = ZoomsUsed.at(run);
+		outData << ",,,Zoom used:" << ',' << CurrentZoomUsed << std::endl << std::endl;
+
 		int RunNumber = 0;
 		int TempRunNumber = 1;
 		outData << ",CPU loads during the test:" << ',' << std::endl;
 		for (auto InfoVec : InformationSet)
 		{
-			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber) && CurrentZoomUsed == ZoomsUsed.at(RunNumber))
 			{
 				outData <<"Run "<< TempRunNumber <<',';
 				for (auto Info : InfoVec)
@@ -117,7 +124,7 @@ void InfoGatherer::WriteTestsToFile()
 		outData << ",Virtual memory loads during the test:" << ',' << std::endl;
 		for (auto InfoVec : InformationSet)
 		{
-			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber) && CurrentZoomUsed == ZoomsUsed.at(RunNumber))
 			{
 				outData << "Run " << TempRunNumber << ',';
 				for (auto Info : InfoVec)
@@ -137,7 +144,7 @@ void InfoGatherer::WriteTestsToFile()
 		outData << ",Physical memory(RAM) loads during the test:" << ',' << std::endl;
 		for (auto InfoVec : InformationSet)
 		{
-			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber) && CurrentZoomUsed == ZoomsUsed.at(RunNumber))
 			{
 				outData << "Run " << TempRunNumber << ',';
 				for (auto Info : InfoVec)
@@ -158,7 +165,7 @@ void InfoGatherer::WriteTestsToFile()
 		outData << ",,";
 		for (auto TimeTaken : TimeTakenVector)
 		{
-			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber) && CurrentZoomUsed == ZoomsUsed.at(RunNumber))
 			{
 				outData << "run " << TempRunNumber << ",";
 				TempRunNumber++;
@@ -172,17 +179,29 @@ void InfoGatherer::WriteTestsToFile()
 		outData << ",,";
 		for (auto TimeTaken : TimeTakenVector)
 		{
-			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber))
+			if (CurrentAmountOfThreadsUsed == AmountOfThreadsUsed.at(RunNumber) && CurrentPrioritySet == PrioritiesUsed.at(RunNumber) && CurrentZoomUsed == ZoomsUsed.at(RunNumber))
 			{
 				outData << TimeTaken << " sec,";
 				TempRunNumber++;
 			}
 			RunNumber++;
 		}
-
-
 		TestNumber++;
 	}
+	outData << std::endl << std::endl;
+	outData << "Overall Time Taken:" << std::endl;
+
+	double OverallTimeTaken = 0.0;
+	for (auto TimeTaken : TimeTakenVector)
+	{
+		OverallTimeTaken += TimeTaken;
+	}
+	outData << OverallTimeTaken << ",sec"<<std::endl;
+	outData << ",Which is:" << std::endl;
+	outData << int(OverallTimeTaken / 60) << ",minutes" << std::endl;
+	outData << "and," << int(OverallTimeTaken) - int(OverallTimeTaken / 60)*60 << ",seconds";
+
+
 	outData.close();
 }
 	

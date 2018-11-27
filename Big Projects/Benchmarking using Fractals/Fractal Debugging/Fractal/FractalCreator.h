@@ -42,6 +42,7 @@ private:
 public:
 	void addColorRange(double rangeEnd, const RGB& rgb);
 	void addZoom(const Zoom& zoom);
+	void resetZoom();
 	FractalCreator(const int  WIDTH, const int HEIGHT);
 	virtual ~FractalCreator();
 	void run(std::string name, int AmountOfThreadsUsed);

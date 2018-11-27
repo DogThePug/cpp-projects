@@ -17,6 +17,14 @@ void ZoomList::add(const Zoom & zoom)
 	_scale *= zoom.scale;
 }
 
+void ZoomList::clear()
+{
+	Zooms.clear();
+	_xCenter = 0;
+	_yCenter = 0;
+	_scale = 1;
+}
+
 std::pair<double, double> ZoomList::ZoomIn(int x, int y)
 {
 	double xFractal = (x - _width / 2)*_scale + _xCenter;

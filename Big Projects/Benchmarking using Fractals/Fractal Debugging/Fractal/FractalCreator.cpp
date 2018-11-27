@@ -20,6 +20,10 @@ FractalCreator::FractalCreator(const int  WIDTH, const int HEIGHT):WIDTH(WIDTH),
  
 void FractalCreator::CalculateIterations(int AmountOfThreadsUsed)
 {
+	for (unsigned int a = 0; a < sizeof(_histogram); a++)
+	{
+		_histogram[a] = 0; // reseting the histogram;
+	}
 	auto IterThread = [this, AmountOfThreadsUsed](int thread)
 	{
 		for (int iHeight = (HEIGHT/ AmountOfThreadsUsed)*(thread - 1);iHeight < (HEIGHT/ AmountOfThreadsUsed)*(thread);iHeight++) {
@@ -119,6 +123,11 @@ void FractalCreator::addZoom(const Zoom & zoom)
 	_zoomList.add(zoom); 
 }
 
+void FractalCreator::resetZoom()
+{
+	_zoomList.clear();
+}
+
 void FractalCreator::WriteBitmap(std::string name)
 {
 	_bitmap.write(name);
@@ -126,6 +135,10 @@ void FractalCreator::WriteBitmap(std::string name)
 
 void FractalCreator::calculateRangeTotals()
 {
+	for (auto item : _rangeTotals)
+	{
+		item = 0;
+	}
 	int rangeIndex = 0;
 
 	for (int i = 0;i < Mandelbrot::MAX_ITERATIONS;i++) {
@@ -177,6 +190,19 @@ void FractalCreator::run(std::string name, int AmountOfThreadsUsed)
 	std::cout << "Executing Mandelbrot algorythm." << std::endl;
 	CalculateIterations(AmountOfThreadsUsed);
 	std::cout << "Finished." << std::endl;
+
+	//calculateRangeTotals();
+
+
+	//std::cout << "Drawing fractal." << std::endl;
+	//DrawFractal();
+	//std::cout << "Done." << std::endl;
+
+	////writing to bitmap
+	//std::cout << "Writing to bitmap file." << std::endl;
+	//WriteBitmap(name);
+
+
 }
 
 

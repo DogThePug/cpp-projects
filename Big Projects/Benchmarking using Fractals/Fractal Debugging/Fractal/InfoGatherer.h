@@ -20,7 +20,7 @@ public:
 
 	void GetInitialInformation();
 
-	void InitializeNewTest(int PriorityCase, int ThreadsUsed);
+	void InitializeNewTest(int PriorityCase, int ThreadsUsed, std::string ZoomUsed);
 
 	void WriteTestsToFile();
 
@@ -33,6 +33,7 @@ public:
 	void AddNewTestTimeTaken(double TimeTakenOnTest);
 private:
 	std::vector<double> TimeTakenVector;
+	std::vector<std::string> ZoomsUsed;
 	std::vector<int> AmountOfThreadsUsed;
 	std::vector<std::string> PrioritiesUsed;
 	std::vector<std::vector<Info>> InformationSet;
